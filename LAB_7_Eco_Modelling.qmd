@@ -1,0 +1,69 @@
+---
+title: "LAB 7 GitHUB Assignment"
+author: "Carter Davey"
+format: html
+editor: visual
+---
+
+```{r}
+library(readxl)
+library(sf)
+library(tidyverse)
+library(mapview)
+library(bcmaps)
+library(tidyverse)
+library(terra)
+library(bcdata)
+library(dplyr)
+library(units)
+
+
+View(available_layers())
+Hist_Inc_Fire<- ecoregions()
+mapview(Hist_Inc_Fire)
+
+park_search_results <- bcdc_search("BC Parks Ecological Reserves Protected Areas")
+View(park_search_results)
+
+protected_areas <- bcdc_get_data(record = "1130248f-f1a3-4956-8b2e-38d29d3e4af7")
+view(protected_areas)
+
+LacDuBois <- protected_areas %>%
+  filter(PROTECTED_LANDS_NAME == "LAC DU BOIS GRASSLANDS PROTECTED AREA")
+mapview(LacDuBois)
+
+
+
+Hist_fire_search_results <- bcdc_get_data(record = "e2dadc60-292f-4d98-b42b-56ca9e4fe694")
+View(Hist_fire_search_results)
+
+
+
+
+Hist_fire_locations <- st_as_sf(Hist_fire_search_results)
+
+LacDuBois <- st_transform(LacDuBois, st_crs(Hist_fire_locations))
+
+Hist_Fire_In_LacDuBois <- st_intersection(Hist_fire_locations, LacDuBois)
+
+mapview(Hist_Fire_In_LacDuBois)
+view(Hist_Fire_In_LacDuBois)
+
+
+
+```
+
+```{r}
+fire_year_counts <- Hist_Fire_In_LacDuBois %>%
+  select(FIRE_YEAR) %>%
+  count(FIRE_YEAR)
+
+
+
+fire_year_counts <- fire_year_counts %>%
+  rename(number_of_fires = n)
+
+
+view(fire_year_counts)
+print(fire_year_counts, number_of_fires)
+```
