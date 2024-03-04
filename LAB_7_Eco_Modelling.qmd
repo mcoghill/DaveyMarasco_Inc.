@@ -54,16 +54,53 @@ view(Hist_Fire_In_LacDuBois)
 ```
 
 ```{r}
+## •	Summarise this dataset to show how many fires occurred by fire year
 fire_year_counts <- Hist_Fire_In_LacDuBois %>%
   select(FIRE_YEAR) %>%
   count(FIRE_YEAR)
 
 
 
-fire_year_counts <- fire_year_counts %>%
-  rename(number_of_fires = n)
-
-
 view(fire_year_counts)
 print(fire_year_counts, number_of_fires)
+```
+
+```{r}
+##•	Create another data summary that shows the overall breakdown of fire cause in the Lac Du Bois Grasslands Protected Area.
+
+fire_cause <- Hist_Fire_In_LacDuBois %>%
+  select(FIRE_CAUSE) %>%
+  count(FIRE_CAUSE)
+
+
+view(fire_cause)
+print(fire_cause, fire_cause)
+```
+
+```{r}
+##•	Generate a mapview of the fire points with colors to illustrate the fire cause.
+
+
+mapview(Hist_Fire_In_LacDuBois, zcol = "FIRE_CAUSE", col.regions = rainbow(length(unique(Hist_Fire_In_LacDuBois$FIRE_CAUSE))))
+
+
+```
+
+```{r}
+
+library(ggplot2)
+
+MEAN_FIRES <- Hist_Fire_In_LacDuBois %>%
+  group_by(FIRE_CAUSE, FIRE_YEAR) %>%
+  summarise(mean_fires = n() / length(unique(FIRE_YEAR))) %>%
+  group_by(FIRE_CAUSE) %>%
+  summarise(mean_fires = mean(mean_fires))
+
+
+ggplot(mean_fires, aes(x = FIRE_CAUSE, y = mean_fires, fill = FIRE_CAUSE)) +
+  geom_boxplot() +
+  labs(x = "Fire Cause", y = "Mean Number of Fires per Year") +
+  theme_minimal()
+
+
 ```
