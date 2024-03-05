@@ -6,7 +6,6 @@ editor: visual
 ---
 
 ```{r}
-library(readxl)
 library(sf)
 library(tidyverse)
 library(mapview)
@@ -87,20 +86,18 @@ mapview(Hist_Fire_In_LacDuBois, zcol = "FIRE_CAUSE", col.regions = rainbow(lengt
 ```
 
 ```{r}
-
 library(ggplot2)
 
-MEAN_FIRES <- Hist_Fire_In_LacDuBois %>%
-  group_by(FIRE_CAUSE, FIRE_YEAR) %>%
-  summarise(mean_fires = n() / length(unique(FIRE_YEAR))) %>%
-  group_by(FIRE_CAUSE) %>%
-  summarise(mean_fires = mean(mean_fires))
+fires_summary <- fires_in_LDB %>%
+  group_by(FIRE_YEAR, FIRE_CAUSE) %>%
+  summarise(number_of_fires = n(), .groups = "drop")
 
 
-ggplot(mean_fires, aes(x = FIRE_CAUSE, y = mean_fires, fill = FIRE_CAUSE)) +
+ggplot(fires_summary, aes(x = FIRE_CAUSE, y = number_of_fires, fill = FIRE_CAUSE)) +
   geom_boxplot() +
-  labs(x = "Fire Cause", y = "Mean Number of Fires per Year") +
-  theme_minimal()
-
+  theme() +
+  labs(title = "Fires Per Year by Cause",
+       x = "Fire Cause",
+       y = "Number of Fires")
 
 ```
