@@ -18,7 +18,7 @@ library(units)
 
 
 View(available_layers())
-Hist_Inc_Fire<- ecoregions()
+Hist_Inc_Fire<- ecoregions() # ????
 mapview(Hist_Inc_Fire)
 
 park_search_results <- bcdc_search("BC Parks Ecological Reserves Protected Areas")
@@ -52,6 +52,10 @@ view(Hist_Fire_In_LacDuBois)
 
 ```
 
+What you did above works, however it's a bit more concise to use the `bcdc_query_geodata()` function and then provide filters *before* downloading data; this prevents you needing to download the whole dataset to your PC as it will do some filtering on their servers before it sends you the filtered dataset.
+
+4/4
+
 ```{r}
 ## •	Summarise this dataset to show how many fires occurred by fire year
 fire_year_counts <- Hist_Fire_In_LacDuBois %>%
@@ -63,6 +67,8 @@ fire_year_counts <- Hist_Fire_In_LacDuBois %>%
 view(fire_year_counts)
 print(fire_year_counts, number_of_fires)
 ```
+
+2/2
 
 ```{r}
 ##•	Create another data summary that shows the overall breakdown of fire cause in the Lac Du Bois Grasslands Protected Area.
@@ -76,6 +82,8 @@ view(fire_cause)
 print(fire_cause, fire_cause)
 ```
 
+2/2
+
 ```{r}
 ##•	Generate a mapview of the fire points with colors to illustrate the fire cause.
 
@@ -85,10 +93,12 @@ mapview(Hist_Fire_In_LacDuBois, zcol = "FIRE_CAUSE", col.regions = rainbow(lengt
 
 ```
 
+2/2
+
 ```{r}
 library(ggplot2)
 
-fires_summary <- fires_in_LDB %>%
+fires_summary <- Hist_Fire_In_LacDuBois %>%
   group_by(FIRE_YEAR, FIRE_CAUSE) %>%
   summarise(number_of_fires = n(), .groups = "drop")
 
@@ -101,3 +111,9 @@ ggplot(fires_summary, aes(x = FIRE_CAUSE, y = number_of_fires, fill = FIRE_CAUSE
        y = "Number of Fires")
 
 ```
+
+4.5/5
+
+I had to change the variable name from `fires_in_LDB` to `Hist_Fire_In_LacDuBois` in order for this to run!
+
+### Total: 14.5/5
